@@ -4,8 +4,8 @@
   "description": "tdd test project",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "mocha index.spec.js"
+    "start": "node bin/www.js",
+    "test": "set NODE_ENV=test && mocha api/user/user.spec.js"
   },
   "keywords": [
     "tdd"
@@ -14,6 +14,7 @@
   "license": "ISC",
   "devDependencies": {
     "mocha": "^6.0.0",
+    "morgan": "^1.9.1",
     "should": "^13.2.3",
     "supertest": "^3.4.2"
   },
