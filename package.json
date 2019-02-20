@@ -1,0 +1,24 @@
+{
+  "name": "tdd",
+  "version": "1.0.0",
+  "description": "tdd test project",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "mocha index.spec.js"
+  },
+  "keywords": [
+    "tdd"
+  ],
+  "author": "yacaeh",
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^6.0.0",
+    "should": "^13.2.3",
+    "supertest": "^3.4.2"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4"
+  }
+}
