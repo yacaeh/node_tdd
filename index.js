@@ -11,5 +11,4 @@ app.use(bodyPaser.json());
 app.use(bodyPaser.urlencoded({extended:true}));
 app.use('/users',user);
 
-
 module.exports = app;

@@ -20,6 +20,8 @@
   },
   "dependencies": {
     "body-parser": "^1.18.3",
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "sequelize": "^4.42.0",
+    "sqlite": "^3.0.2"
   }
 }

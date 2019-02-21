@@ -1,4 +1,6 @@
-var users = [{
+const models = require('../../models');
+
+const users = [{
     id: 1,
     name: 'test'
 }, {
@@ -16,7 +18,15 @@ const index = function (req, res) {
     if (Number.isNaN(limit)) {
         return res.status(400).end();
     }
-    res.json(users.slice(0, limit));
+
+    models.User.
+        findAll({
+            limit: limit
+        })
+        .then(users=>{
+            res.json(users.slice(0, limit));
+            return true;
+        })
 }
 
 const show =  function (req, res) {
@@ -24,13 +34,15 @@ const show =  function (req, res) {
     if (Number.isNaN(id)) {
         return res.status(400).end();
     }
-    const user = users.filter((user) => {
-        return user.id === id;
-    })[0];
-    if (!user) {
-        return res.status(404).end();
-    }
-    res.json(user);
+
+    models.User.findOne({
+        where:{id}
+    }).then(user=>{
+        if (!user) {
+            return res.status(404).end();
+        }
+        res.json(user);
+    });
 }
 
 const destroy = (req, res) => {
@@ -38,29 +50,32 @@ const destroy = (req, res) => {
     if (Number.isNaN(id)) {
         return res.status(400).end();
     }
-    const user = users.filter((user) => {
-        return user.id !== id;
-    });
-    res.status(204).end();
+
+    models.User.destroy({
+        where:{id}
+    }).then(()=>{
+        res.status(204).end();
+    })
+
 };
 const create =  (req, res) => {
     const name = req.body.name;
-    if (!name) {
-        res.status(400).end();
-        return true;
-    }
-    const isExist = users.filter(user => user.name === name).length;
-    if (isExist) {
-        res.status(409).end();
-        return true;
-    }
-    const id = Date.now();
-    const user = {
-        id,
-        name
-    };
-    users.push(user);
-    res.status(201).json(user);
+    if (!name) { res.status(400).end();return true;}
+    
+    models.User.create({name})
+        .then(user=>{
+        res.status(201).json(user);
+        })
+        .catch(err =>{
+            console.log(err.message);
+            if(err.name === 'SequelizeUniqueConstraintError'){
+                res.status(409).end();
+                return true;
+                        
+            };
+            res.status(500).end();
+            return true;
+        })
 };
 
 const update =  (req, res) => {
@@ -75,6 +90,24 @@ const update =  (req, res) => {
         res.status(400).end();
         return true;
     }
+
+    models.User.findOne({where:{id}})
+        .then(user=>{
+        if(!user) return res.status(404).end(0);
+        user.name = name;
+        user.save()
+            .then(_=> {
+                res.json(user);
+            })
+            .catch(err=> {
+                if(err.name === 'SequelizeUniqueConstraintError'){
+                    res.status(409).end();
+                    return true;
+                };
+                res.status(500).end();
+                return true;
+            })
+        })
     const isExist = users.filter(user => user.name === name).length;
     if (isExist) {
         res.status(409).end();
